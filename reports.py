@@ -10,7 +10,8 @@ def get_popular_articles():
         "from articles, log "
         "where concat('/article/', articles.slug)=log.path "
         "and log.status='200 OK' "
-        "group by articles.title order by views desc;")
+        "group by articles.title order by views desc "
+        "limit 3;")
     return c.fetchall()
     pg.close()
 
