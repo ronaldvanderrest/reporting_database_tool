@@ -7,12 +7,12 @@ def get_popular_articles():
     pg = psycopg2.connect("dbname=news")
     c = pg.cursor()
     c.execute(
-        "select articles.title, count(articles.title) as views "
-        "from articles, log "
-        "where concat('/article/', articles.slug)=log.path "
-        "and log.status='200 OK' "
-        "group by articles.title order by views desc "
-        "limit 3;")
+        "SELECT articles.title, count(articles.title) AS views "
+        "FROM articles, log "
+        "WHERE concat('/article/', articles.slug)=log.path "
+        "AND log.status='200 OK' "
+        "GROUP BY articles.title ORDER BY views DESC "
+        "LIMIT 3;")
     return c.fetchall()
     pg.close()
 
@@ -23,11 +23,11 @@ def get_popular_authors():
     pg = psycopg2.connect("dbname=news")
     c = pg.cursor()
     c.execute(
-        "select authors.name, count(authors.name) as views "
-        "from articles, log, authors "
-        "where concat('/article/', articles.slug)=log.path "
-        "and articles.author = authors.id and log.status='200 OK' "
-        "group by authors.name order by views desc")
+        "SELECT authors.name, count(authors.name) AS views "
+        "FROM articles, log, authors "
+        "WHERE concat('/article/', articles.slug)=log.path "
+        "AND articles.author = authors.id AND log.status='200 OK' "
+        "GROUP BY authors.name ORDER BY views DESC")
     return c.fetchall()
     pg.close()
 
@@ -37,12 +37,12 @@ def get_error_percentages():
     pg = psycopg2.connect("dbname=news")
     c = pg.cursor()
     c.execute(
-        "select date, error_percentage from (select date(time) as date, "
+        "SELECT date, error_percentage FROM (select date(time) AS date, "
         "round(100.0*sum(case log.status when '200 OK'  then 0 else 1 end)/"
-        "count(log.status),2) as error_percentage "
-        "from log "
-        "group by date order by error_percentage desc) subquery1 "
-        "where error_percentage > 1;")
+        "count(log.status),2) AS error_percentage "
+        "FROM log "
+        "GROUP BY date ORDER BY error_percentage desc) subquery1 "
+        "WHERE error_percentage > 1;")
     return c.fetchall()
     pg.close()
 
